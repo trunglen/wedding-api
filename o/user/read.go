@@ -7,9 +7,10 @@ import (
 
 var ErrMismatchedHashAndPassword = "crypto/bcrypt: hashedPassword is not the hash of the given password"
 
-func GetUsers() ([]*User, error) {
+func GetUsers(role string) ([]*User, error) {
 	var users []*User
 	err := userTable.FindWhere(bson.M{
+		"role": role,
 		"dtime": bson.M{
 			"$ne": 0,
 		},
@@ -19,7 +20,7 @@ func GetUsers() ([]*User, error) {
 
 func Login(uname, pwd string) (*User, error) {
 	var user *User
-	var query = bson.M{"uname": uname}
+	var query = bson.M{"phone": uname}
 	err := userTable.FindOne(query, &user)
 	if err != nil {
 		if err.Error() == "not found" {

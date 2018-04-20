@@ -1,7 +1,7 @@
 package config
 
 import (
-	"seed/x/logger"
+	"wedding-api/x/logger"
 
 	"github.com/BurntSushi/toml"
 )

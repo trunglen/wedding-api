@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"g/x/web"
-	"seed/x/logger"
+	"wedding-api/x/logger"
 
 	"github.com/gin-gonic/gin"
 )

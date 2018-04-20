@@ -3,7 +3,7 @@ package middleware
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/auth"
+	"wedding-api/o/auth"
 )
 
 const errNotPermision = "you are not enough permision"
@@ -20,6 +20,7 @@ func Authenticate(role string) gin.HandlerFunc {
 					"status": "error",
 				})
 				return
+				return
 			}
 		} else {
 			if err.Error() == "not found" {
@@ -34,6 +35,6 @@ func Authenticate(role string) gin.HandlerFunc {
 	}
 }
 
-var MustBeAdmin = Authenticate("admin")
-var MustBeBoss = Authenticate("boss")
+var MustBeAdmin = Authenticate("super-admin")
+var MustBeBoss = Authenticate("restaurant")
 var MustBeManager = Authenticate("manager")

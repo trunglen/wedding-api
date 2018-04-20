@@ -2,7 +2,7 @@ package category
 
 import (
 	"g/x/web"
-	"seed/o/category"
+	"wedding-api/o/category"
 
 	"github.com/gin-gonic/gin"
 )

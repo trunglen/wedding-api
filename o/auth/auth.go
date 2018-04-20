@@ -3,7 +3,7 @@ package auth
 import (
 	"g/x/math"
 	"gopkg.in/mgo.v2/bson"
-	"seed/x/mongodb"
+	"wedding-api/x/mongodb"
 )
 
 var authTable = mongodb.NewTable("auth", "auth")
@@ -25,6 +25,7 @@ func Create(userID, role string) *Auth {
 	authTable.Upsert(bson.M{
 		"user_id": userID,
 		"role":    role,
+		"_id":     auth.ID,
 	}, auth)
 	return &auth
 }

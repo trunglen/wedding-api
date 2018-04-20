@@ -3,8 +3,8 @@ package auth
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/auth"
-	"seed/o/user"
+	"wedding-api/o/auth"
+	"wedding-api/o/user"
 )
 
 type AuthServer struct {
@@ -23,11 +23,11 @@ func NewAuthServer(parent *gin.RouterGroup, name string) *AuthServer {
 
 func (s *AuthServer) login(c *gin.Context) {
 	var loginInfo = struct {
-		Uname    string
+		Phone    string
 		Password string
 	}{}
 	c.BindJSON(&loginInfo)
-	user, err := user.Login(loginInfo.Uname, loginInfo.Password)
+	user, err := user.Login(loginInfo.Phone, loginInfo.Password)
 	web.AssertNil(err)
 	var auth = auth.Create(user.ID, user.Role)
 	s.SendData(c, map[string]interface{}{

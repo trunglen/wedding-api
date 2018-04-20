@@ -3,7 +3,7 @@ package user
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/user"
+	"wedding-api/o/user"
 )
 
 type UserServer struct {
@@ -22,7 +22,8 @@ func NewUserServer(parent *gin.RouterGroup, name string) *UserServer {
 }
 
 func (s *UserServer) getUsers(c *gin.Context) {
-	var users, err = user.GetUsers()
+	var role = c.Query("role")
+	var users, err = user.GetUsers(role)
 	web.AssertNil(err)
 	s.SendData(c, users)
 }

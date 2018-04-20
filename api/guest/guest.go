@@ -3,8 +3,8 @@ package guest
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/auth"
-	"seed/o/user"
+	"wedding-api/o/auth"
+	"wedding-api/o/user"
 )
 
 type GuestServer struct {

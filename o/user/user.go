@@ -3,9 +3,9 @@ package user
 import (
 	"g/x/web"
 	"gopkg.in/mgo.v2/bson"
-	"seed/x/logger"
-	"seed/x/mongodb"
-	"seed/x/validator"
+	"wedding-api/x/logger"
+	"wedding-api/x/mongodb"
+	"wedding-api/x/validator"
 )
 
 var userTable = mongodb.NewTable("user", "usr")

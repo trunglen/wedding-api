@@ -1,10 +1,10 @@
 package api
 
 import (
-	"seed/api/admin"
-	"seed/api/auth"
-	"seed/api/guest"
-	"seed/api/public"
+	"wedding-api/api/admin"
+	"wedding-api/api/auth"
+	"wedding-api/api/guest"
+	"wedding-api/api/public"
 
 	"github.com/gin-gonic/gin"
 )

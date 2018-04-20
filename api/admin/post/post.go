@@ -5,9 +5,9 @@ import (
 	"g/x/math"
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/post"
-	// "seed/o/push_token"
-	// "seed/x/fcm"
+	"wedding-api/o/post"
+	// "wedding-api/o/push_token"
+	// "wedding-api/x/fcm"
 )
 
 type PostServer struct {

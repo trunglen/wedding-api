@@ -1,7 +1,7 @@
 package config
 
 import (
-	"seed/x/fcm"
+	"wedding-api/x/fcm"
 )
 
 type pushConfig struct {

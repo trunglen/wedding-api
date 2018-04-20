@@ -1,7 +1,7 @@
 package config
 
 import (
-	"seed/x/mongodb"
+	"wedding-api/x/mongodb"
 )
 
 type dbConfig struct {

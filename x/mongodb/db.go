@@ -1,7 +1,7 @@
 package mongodb
 
 import (
-	"seed/x/logger"
+	"wedding-api/x/logger"
 
 	"gopkg.in/mgo.v2"
 )

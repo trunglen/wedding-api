@@ -2,9 +2,9 @@ package category
 
 import (
 	"g/x/web"
-	"seed/x/logger"
-	"seed/x/mongodb"
-	"seed/x/validator"
+	"wedding-api/x/logger"
+	"wedding-api/x/mongodb"
+	"wedding-api/x/validator"
 )
 
 var categoryLog = logger.NewLogger("tbl_category")

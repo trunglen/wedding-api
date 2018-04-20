@@ -3,10 +3,10 @@ package admin
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/api/admin/category"
-	"seed/api/admin/post"
-	"seed/api/admin/user"
-	"seed/middleware"
+	"wedding-api/api/admin/category"
+	"wedding-api/api/admin/post"
+	"wedding-api/api/admin/user"
+	"wedding-api/middleware"
 )
 
 type AdminServer struct {

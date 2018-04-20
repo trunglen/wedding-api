@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"seed/o/category"
-	"seed/o/post"
-	"seed/o/push_token"
-	"seed/x/fcm"
+	"wedding-api/o/category"
+	"wedding-api/o/post"
+	"wedding-api/o/push_token"
+	"wedding-api/x/fcm"
 	"strconv"
 )
 

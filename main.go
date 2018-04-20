@@ -2,12 +2,12 @@ package main
 
 import (
 	// 1 load first
-	"seed/config"
+	"wedding-api/config"
 	// 2
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"seed/api"
-	"seed/middleware"
+	"wedding-api/api"
+	"wedding-api/middleware"
 )
 
 func main() {
