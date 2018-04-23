@@ -14,6 +14,6 @@ api_key = "AAAAyQ2ofN0:APA91bEz66dHhehSpnQDpjolBt9EeU9o2ZOi_Tc5Z7slUfQ_CXGH9Ww6s
 
 [db]
 host = "163.44.206.108:27017"
-uname = ""
-password = ""
+uname = "trunglen"
+password = "trungyeulen4ever"
 name = "wedding"

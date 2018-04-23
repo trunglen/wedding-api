@@ -37,3 +37,23 @@ func Login(uname, pwd string) (*User, error) {
 	}
 	return user, nil
 }
+
+func LoginByStudent(uname, pwd string) (*User, error) {
+	var user *User
+	var query = bson.M{"phone": uname, "role": "student"}
+	err := userTable.FindOne(query, &user)
+	if err != nil {
+		if err.Error() == "not found" {
+			return nil, web.BadRequest("Sai tên đăng nhập hoặc mật khẩu")
+		}
+		return nil, err
+	}
+	if err := Password(pwd).ComparePassword(user.HashedPassword); err != nil {
+		if err.Error() == ErrMismatchedHashAndPassword {
+			userLog.Error(err)
+			return nil, web.BadRequest("Sai tên đăng nhập hoặc mật khẩu")
+		}
+		return nil, err
+	}
+	return user, nil
+}

@@ -18,14 +18,23 @@ const (
 
 type User struct {
 	mongodb.Model     `bson:",inline"`
-	Name              string   `bson:"name" json:"name"`
-	Phone             string   `bson:"phone" json:"phone"`
-	HashedPassword    string   `bson:"password" json:"-"`
-	Password          Password `bson:"-" json:"password"`
-	RestaurantName    string   `bson:"restaurant_name" json:"restaurant_name"`
-	RestaurantID      string   `bson:"restaurant_id" json:"restaurant_id"`
-	RestaurantAddress string   `bson:"restaurant_address" json:"restaurant_address"`
-	Role              string   `bson:"role" json:"role"`
+	Name              string      `bson:"name" json:"name"`
+	Phone             string      `bson:"phone" json:"phone"`
+	HashedPassword    string      `bson:"password" json:"-"`
+	Password          Password    `bson:"-" json:"password"`
+	RestaurantName    string      `bson:"restaurant_name" json:"restaurant_name"`
+	RestaurantID      string      `bson:"restaurant_id" json:"restaurant_id"`
+	RestaurantAddress string      `bson:"restaurant_address" json:"restaurant_address"`
+	Role              string      `bson:"role" json:"role"`
+	Information       Information `bson:"information" json:"information"`
+}
+
+type Information struct {
+	Weight  float32 `bson:"weight" json:"weight"`
+	Height  float32 `bson:"height" json:"height"`
+	Sex     bool    `bson:"sex" json:"sex"`
+	Rating  float32 `bson:"rating" json:"rating"`
+	Balance float32 `bson:"balance" json:"balance"`
 }
 
 const (

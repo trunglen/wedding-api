@@ -1,0 +1,5 @@
+Log file created at: 2018/04/23 18:09:49
+Running on machine: DESKTOP-TTBN8LU
+Binary: Built with gc go1.10.1 for windows/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+E0423 18:09:49.843778    4628 logger.go:26] [user] [crypto/bcrypt: hashedPassword is not the hash of the given password]
