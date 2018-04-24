@@ -9,17 +9,25 @@ import (
 const errNotPermision = "you are not enough permision"
 const errUnauthorize = "you are not enough permision"
 
-func Authenticate(role string) gin.HandlerFunc {
+func contains(arr []string, str string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
+	return false
+}
+
+func Authenticate(roles ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var token = web.GetToken(c.Request)
 		var res, err = auth.GetByID(token)
 		if err == nil && res != nil {
-			if res.Role != role {
+			if !contains(roles, res.Role) {
 				c.AbortWithStatusJSON(401, map[string]interface{}{
 					"error":  errNotPermision,
 					"status": "error",
 				})
-				return
 				return
 			}
 		} else {
@@ -37,4 +45,4 @@ func Authenticate(role string) gin.HandlerFunc {
 
 var MustBeAdmin = Authenticate("super-admin")
 var MustBeBoss = Authenticate("restaurant")
-var MustBeManager = Authenticate("manager")
+var MustBeManager = Authenticate("manager", "super-admin")

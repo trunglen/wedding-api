@@ -26,7 +26,7 @@ type User struct {
 	RestaurantID      string      `bson:"restaurant_id" json:"restaurant_id"`
 	RestaurantAddress string      `bson:"restaurant_address" json:"restaurant_address"`
 	Role              string      `bson:"role" json:"role"`
-	Information       Information `bson:"information" json:"information"`
+	Information       Information `bson:"information" json:"information, omitempty"`
 }
 
 type Information struct {

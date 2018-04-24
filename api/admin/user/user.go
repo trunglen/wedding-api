@@ -30,7 +30,7 @@ func (s *UserServer) getUsers(c *gin.Context) {
 
 func (s *UserServer) createUser(c *gin.Context) {
 	var user *user.User
-	c.BindJSON(&user)
+	web.AssertNil(c.BindJSON(&user))
 	web.AssertNil(user.Create())
 	s.SendData(c, user)
 }
