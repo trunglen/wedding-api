@@ -46,3 +46,4 @@ func Authenticate(roles ...string) gin.HandlerFunc {
 var MustBeAdmin = Authenticate("super-admin")
 var MustBeBoss = Authenticate("restaurant")
 var MustBeManager = Authenticate("manager", "super-admin")
+var MustBeStudent = Authenticate("student")

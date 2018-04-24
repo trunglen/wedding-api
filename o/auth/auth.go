@@ -16,21 +16,27 @@ type Auth struct {
 }
 
 func Create(userID, role string) *Auth {
-	var auth = Auth{
-		UserID:  userID,
-		Role:    role,
-		Revoked: false,
+	var auth = &Auth{
+		UserID: userID,
+		Role:   role,
 	}
 	auth.SetID(math.RandString("auth", 80))
-	authTable.Upsert(bson.M{
-		"user_id": userID,
-		"role":    role,
-		"_id":     auth.ID,
-	}, auth)
-	return &auth
+	if auth != nil {
+		authTable.Remove(bson.M{
+			"user_id": userID,
+			"role":    role,
+		})
+	}
+	authTable.Insert(auth)
+	return auth
 }
 
 func GetByID(id string) (*Auth, error) {
 	var auth *Auth
 	return auth, authTable.FindID(id, &auth)
+}
+
+func GetTokens() ([]*Auth, error) {
+	var auth []*Auth
+	return auth, authTable.FindAll(&auth)
 }

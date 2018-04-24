@@ -7,6 +7,11 @@ import (
 
 var ErrMismatchedHashAndPassword = "crypto/bcrypt: hashedPassword is not the hash of the given password"
 
+func GetByID(id string) (*User, error) {
+	var user *User
+	return user, userTable.FindID(id, &user)
+}
+
 func GetUsers(role string) ([]*User, error) {
 	var users []*User
 	err := userTable.FindWhere(bson.M{

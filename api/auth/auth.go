@@ -3,7 +3,7 @@ package auth
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"wedding-api/o/auth"
+	"wedding-api/cache"
 	"wedding-api/o/user"
 )
 
@@ -29,7 +29,7 @@ func (s *AuthServer) login(c *gin.Context) {
 	c.BindJSON(&loginInfo)
 	user, err := user.Login(loginInfo.Phone, loginInfo.Password)
 	web.AssertNil(err)
-	var auth = auth.Create(user.ID, user.Role)
+	var auth = cache.CreateAuth(user.ID, user.Role)
 	s.SendData(c, map[string]interface{}{
 		"token":     auth.ID,
 		"user_info": user,

@@ -4,6 +4,8 @@ import (
 	// 1 load first
 	"wedding-api/config"
 	// 2
+	_ "wedding-api/cache"
+	// 3
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"wedding-api/api"

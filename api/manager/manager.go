@@ -19,6 +19,7 @@ func NewManagerServer(parent *gin.RouterGroup, name string) *ManagerServer {
 	s.Use(middleware.MustBeManager)
 	s.POST("wedding/create", s.createWedding)
 	s.GET("wedding/list", s.getWeddings)
+	s.GET("wedding/detail", s.getWedding)
 	return &s
 }
 
@@ -31,6 +32,13 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 
 func (s *ManagerServer) getWeddings(c *gin.Context) {
 	var result, err = wedding.GetWeddings()
+	web.AssertNil(err)
+	s.SendData(c, result)
+}
+
+func (s *ManagerServer) getWedding(c *gin.Context) {
+	var id = c.Query("id")
+	var result, err = wedding.GetWedding(id)
 	web.AssertNil(err)
 	s.SendData(c, result)
 }

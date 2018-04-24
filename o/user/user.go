@@ -21,20 +21,25 @@ type User struct {
 	Name              string      `bson:"name" json:"name"`
 	Phone             string      `bson:"phone" json:"phone"`
 	HashedPassword    string      `bson:"password" json:"-"`
-	Password          Password    `bson:"-" json:"password"`
-	RestaurantName    string      `bson:"restaurant_name" json:"restaurant_name"`
-	RestaurantID      string      `bson:"restaurant_id" json:"restaurant_id"`
-	RestaurantAddress string      `bson:"restaurant_address" json:"restaurant_address"`
+	Password          Password    `bson:"-" json:"password,omitempty"`
+	RestaurantName    string      `bson:"restaurant_name" json:"restaurant_name,omitempty"`
+	RestaurantID      string      `bson:"restaurant_id" json:"restaurant_id,omitempty"`
+	Address           string      `bson:"address" json:"address,omitempty"`
+	RestaurantAddress string      `bson:"restaurant_address" json:"restaurant_address,omitempty"`
 	Role              string      `bson:"role" json:"role"`
-	Information       Information `bson:"information" json:"information, omitempty"`
+	Information       Information `bson:"information" json:"information,omitempty"`
 }
 
 type Information struct {
-	Weight  float32 `bson:"weight" json:"weight"`
-	Height  float32 `bson:"height" json:"height"`
-	Sex     bool    `bson:"sex" json:"sex"`
-	Rating  float32 `bson:"rating" json:"rating"`
-	Balance float32 `bson:"balance" json:"balance"`
+	Weight       float32 `bson:"weight" json:"weight"`
+	Height       float32 `bson:"height" json:"height"`
+	Sex          bool    `bson:"sex" json:"sex"`
+	Rating       float32 `bson:"rating" json:"rating"`
+	Balance      float32 `bson:"balance" json:"balance"`
+	RestaurantID string  `bson:"restaurant_id" json:"restaurant_id,omitempty"`
+	Avatar       string  `bson:"-" json:"avatar"`
+	Portrait     string  `bson:"-" json:"portrait"`
+	BirthYear    int     `bson:"birth_year" json:"birth_year"`
 }
 
 const (
@@ -88,4 +93,36 @@ func GetGuestByEmail(email string) (*User, error) {
 
 func DeleteUserByID(id string) error {
 	return userTable.DeleteByID(id)
+}
+
+func (u *User) UpdateProfile() error {
+	return userTable.UpdateId(u.ID, bson.M{
+		"$set": bson.M{
+			"name": u.Name,
+			"information": bson.M{
+				"weight":     u.Information.Weight,
+				"height":     u.Information.Height,
+				"sex":        u.Information.Sex,
+				"birth_year": u.Information.BirthYear,
+			},
+		},
+	})
+}
+
+func ChangePassword(id, oldPwd, newPwd string) error {
+	var user *User
+	userTable.FindID(id, &user)
+	if user != nil {
+		if Password(oldPwd).ComparePassword(user.HashedPassword) != nil {
+			return web.BadRequest("Mật khẩu cũ không chính xác")
+		}
+	} else {
+		return web.BadRequest("user_id not found")
+	}
+	var newHashPwd, _ = Password(newPwd).Hash()
+	return userTable.UpdateId(id, bson.M{
+		"$set": bson.M{
+			"password": string(newHashPwd),
+		},
+	})
 }
