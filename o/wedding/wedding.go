@@ -3,13 +3,12 @@ package wedding
 import (
 	"g/x/math"
 	"g/x/web"
-	"github.com/golang/glog"
 	"gopkg.in/mgo.v2/bson"
 	"wedding-api/x/mongodb"
 )
 
 const (
-	STATUS_NEW            = "new"
+	STATUS_NEW            = "missing"
 	STATUS_FULL           = "full"
 	STATUS_FINISH         = "finish"
 	STATUS_SAFE           = "safe"
@@ -74,8 +73,6 @@ func (w *Wedding) UpdateStudentStatus(s Student) error {
 		}
 		if item.ID == s.ID {
 			w.Students[i] = s
-			glog.Info(w.Students)
-
 		}
 	}
 	var update = bson.M{}

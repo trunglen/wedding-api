@@ -3,6 +3,7 @@ package student
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"wedding-api/cache"
 	"wedding-api/o/user"
 	"wedding-api/o/wedding"
@@ -25,6 +26,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("wedding/join", s.joinWedding)
 	s.POST("wedding/move", s.moveToWedding)
 	s.POST("wedding/finish", s.finishWedding)
+	s.GET("wedding/list", s.listWedding)
 	return &s
 }
 
@@ -44,17 +46,17 @@ func (s *StudentServer) login(c *gin.Context) {
 }
 
 func (s *StudentServer) uploadAvatar(c *gin.Context) {
-	var userID = c.Query("user_id")
+	var user = cache.MustGetStudent(c)
 	var file, err = c.FormFile("avatar")
 	web.AssertNil(err)
-	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/avatar/"+userID))
+	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/avatar/"+user.ID))
 	s.Success(c)
 }
 func (s *StudentServer) uploadPortrait(c *gin.Context) {
-	var userID = c.Query("user_id")
+	var user = cache.MustGetStudent(c)
 	var file, err = c.FormFile("avatar")
 	web.AssertNil(err)
-	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/portrait/"+userID))
+	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/portrait/"+user.ID))
 	s.Success(c)
 }
 
@@ -103,5 +105,14 @@ func (s *StudentServer) finishWedding(c *gin.Context) {
 	var weddingID = c.Query("wedding_id")
 	var wed, _ = wedding.GetWedding(weddingID)
 	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_FINISH)))
+	s.SendData(c, wed)
+}
+
+func (s *StudentServer) listWedding(c *gin.Context) {
+	var user = cache.MustGetStudent(c)
+	var status = c.Query("status")
+	var page, _ = strconv.ParseInt(c.Query("page"), 10, 32)
+	var wed, err = wedding.GetWeddingByStatus(user.ID, user.Information.Sex, status, int(page))
+	web.AssertNil(err)
 	s.SendData(c, wed)
 }
