@@ -11,3 +11,7 @@ func GetWedding(id string) (*Wedding, error) {
 	var err = weddingTable.FindID(id, &result)
 	return result, err
 }
+
+func DeleteWeddingByID(id string) error {
+	return weddingTable.RemoveId(id)
+}

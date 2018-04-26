@@ -3,6 +3,7 @@ package user
 import (
 	"g/x/web"
 	"gopkg.in/mgo.v2/bson"
+	"wedding-api/o/wedding"
 	"wedding-api/x/logger"
 	"wedding-api/x/mongodb"
 	"wedding-api/x/validator"
@@ -16,6 +17,14 @@ const (
 	ADMIN = "admin"
 )
 
+type BaseUser struct {
+	mongodb.Model  `bson:",inline"`
+	Name           string   `bson:"name" json:"name"`
+	Phone          string   `bson:"phone" json:"phone"`
+	HashedPassword string   `bson:"password" json:"-"`
+	Password       Password `bson:"-" json:"password,omitempty"`
+}
+
 type User struct {
 	mongodb.Model     `bson:",inline"`
 	Name              string      `bson:"name" json:"name"`
@@ -24,7 +33,6 @@ type User struct {
 	Password          Password    `bson:"-" json:"password,omitempty"`
 	RestaurantName    string      `bson:"restaurant_name" json:"restaurant_name,omitempty"`
 	RestaurantID      string      `bson:"restaurant_id" json:"restaurant_id,omitempty"`
-	Address           string      `bson:"address" json:"address,omitempty"`
 	RestaurantAddress string      `bson:"restaurant_address" json:"restaurant_address,omitempty"`
 	Role              string      `bson:"role" json:"role"`
 	Information       Information `bson:"information" json:"information,omitempty"`
@@ -44,6 +52,7 @@ type Information struct {
 
 const (
 	errExists           = "user exists!"
+	errPhoneExists      = "Số điện thoại đã tồn tại trong hệ thống!"
 	errMisMatchUNamePwd = "username or password is incorect!"
 )
 
@@ -64,12 +73,16 @@ func GetUserByPhone(phone string) (*User, error) {
 
 func (u *User) Create() error {
 	var err = validator.Struct(u)
-	hashed, _ := u.Password.Hash()
-	u.HashedPassword = hashed
 	if err != nil {
 		userLog.Error(err)
 		return web.WrapBadRequest(err, "")
 	}
+	user, err := GetUserByPhone(u.Phone)
+	if user != nil {
+		return web.BadRequest(errPhoneExists)
+	}
+	hashed, _ := u.Password.Hash()
+	u.HashedPassword = hashed
 	return userTable.Create(u)
 }
 
@@ -125,4 +138,14 @@ func ChangePassword(id, oldPwd, newPwd string) error {
 			"password": string(newHashPwd),
 		},
 	})
+}
+
+func (user *User) ToStudent(status string) wedding.Student {
+	return wedding.Student{
+		ID:     user.ID,
+		Name:   user.Name,
+		Sex:    user.Information.Sex,
+		Status: status,
+		Phone:  user.Phone,
+	}
 }

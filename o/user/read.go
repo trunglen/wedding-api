@@ -14,12 +14,12 @@ func GetByID(id string) (*User, error) {
 
 func GetUsers(role string) ([]*User, error) {
 	var users []*User
-	err := userTable.FindWhere(bson.M{
+	err := userTable.Find(bson.M{
 		"role": role,
 		"dtime": bson.M{
 			"$ne": 0,
 		},
-	}, &users)
+	}).Sort("-ctime").All(&users)
 	return users, err
 }
 

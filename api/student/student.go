@@ -23,6 +23,8 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("avatar", s.uploadAvatar)
 	s.POST("portrait", s.uploadPortrait)
 	s.POST("wedding/join", s.joinWedding)
+	s.POST("wedding/move", s.moveToWedding)
+	s.POST("wedding/finish", s.finishWedding)
 	return &s
 }
 
@@ -82,7 +84,24 @@ func (s *StudentServer) joinWedding(c *gin.Context) {
 		ID:     user.ID,
 		Name:   user.Name,
 		Sex:    user.Information.Sex,
-		Status: wedding.STATUS_JOIN,
+		Status: wedding.STATUS_STUDENT_JOIN,
+		Phone:  user.Phone,
 	}))
+	s.SendData(c, wed)
+}
+
+func (s *StudentServer) moveToWedding(c *gin.Context) {
+	var user = cache.MustGetStudent(c)
+	var weddingID = c.Query("wedding_id")
+	var wed, _ = wedding.GetWedding(weddingID)
+	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_MOVE)))
+	s.SendData(c, wed)
+}
+
+func (s *StudentServer) finishWedding(c *gin.Context) {
+	var user = cache.MustGetStudent(c)
+	var weddingID = c.Query("wedding_id")
+	var wed, _ = wedding.GetWedding(weddingID)
+	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_FINISH)))
 	s.SendData(c, wed)
 }

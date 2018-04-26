@@ -2,15 +2,20 @@ package wedding
 
 import (
 	"g/x/math"
+	"g/x/web"
+	"github.com/golang/glog"
 	"gopkg.in/mgo.v2/bson"
 	"wedding-api/x/mongodb"
 )
 
 const (
-	STATUS_NEW    = "new"
-	STATUS_MOVE   = "move"
-	STATUS_FINISH = "finish"
-	STATUS_JOIN   = "join"
+	STATUS_NEW            = "new"
+	STATUS_FULL           = "full"
+	STATUS_FINISH         = "finish"
+	STATUS_SAFE           = "safe"
+	STATUS_STUDENT_MOVE   = "move"
+	STATUS_STUDENT_JOIN   = "join"
+	STATUS_STUDENT_FINISH = "finish"
 )
 
 type Wedding struct {
@@ -49,12 +54,74 @@ func (w *Wedding) Create() error {
 }
 
 func (w *Wedding) AcceptStudent(s Student) error {
+	if err := w.CheckExistStudent(s); err != nil {
+		return err
+	}
+	if male, felmale := w.CountNumberStudentAccept(); male == w.NumberOfStudents/2 || felmale == w.NumberOfStudents/2 {
+		return web.BadRequest("Đám này đã đủ số lượng")
+	}
 	w.Students = append(w.Students, s)
 	return weddingTable.UpdateId(w.ID, bson.M{"$push": bson.M{
 		"students": s,
 	}})
 }
 
-func (w *Wedding) CountNumberStudentAccept() {
+func (w *Wedding) UpdateStudentStatus(s Student) error {
+	var countStatus = 0
+	for i, item := range w.Students {
+		if item.Status == s.Status {
+			countStatus++
+		}
+		if item.ID == s.ID {
+			w.Students[i] = s
+			glog.Info(w.Students)
 
+		}
+	}
+	var update = bson.M{}
+	if countStatus == len(w.Students) && len(w.Students) == w.NumberOfStudents {
+		if s.Status == STATUS_STUDENT_MOVE {
+			update["status"] = STATUS_SAFE
+		} else if s.Status == STATUS_STUDENT_FINISH {
+			update["status"] = STATUS_STUDENT_FINISH
+		}
+
+	}
+	update["students"] = w.Students
+	return weddingTable.UpdateId(w.ID, bson.M{"$set": update})
+}
+
+func (w *Wedding) MoveToWedding(s Student) error {
+	if err := w.CheckExistStudent(s); err != nil {
+		return err
+	}
+	if male, felmale := w.CountNumberStudentAccept(); male == w.NumberOfStudents/2 || felmale == w.NumberOfStudents/2 {
+		return web.BadRequest("Đám này đã đủ số lượng")
+	}
+	w.Students = append(w.Students, s)
+	return weddingTable.UpdateId(w.ID, bson.M{"$push": bson.M{
+		"students": s,
+	}})
+}
+
+func (w *Wedding) CountNumberStudentAccept() (int, int) {
+	var countMale = 0
+	var countFelmale = 0
+	for _, item := range w.Students {
+		if item.Sex {
+			countMale++
+		} else {
+			countFelmale++
+		}
+	}
+	return countMale, countFelmale
+}
+
+func (w *Wedding) CheckExistStudent(s Student) error {
+	for _, item := range w.Students {
+		if item.ID == s.ID {
+			return web.BadRequest("Bạn đã tham gia đám này")
+		}
+	}
+	return nil
 }
