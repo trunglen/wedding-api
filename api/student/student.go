@@ -61,7 +61,9 @@ func (s *StudentServer) uploadPortrait(c *gin.Context) {
 }
 
 func (s *StudentServer) updateProfile(c *gin.Context) {
+	var usr = cache.MustGetStudent(c)
 	var u *user.User
+	u.ID = usr.ID
 	web.AssertNil(c.BindJSON(&u))
 	web.AssertNil(u.UpdateProfile())
 	s.Success(c)
