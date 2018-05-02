@@ -3,6 +3,7 @@ package user
 import (
 	"g/x/web"
 	"gopkg.in/mgo.v2/bson"
+	"wedding-api/x/mongodb"
 )
 
 var ErrMismatchedHashAndPassword = "crypto/bcrypt: hashedPassword is not the hash of the given password"
@@ -20,6 +21,30 @@ func GetUsers(role string) ([]*User, error) {
 			"$ne": 0,
 		},
 	}).Sort("-ctime").All(&users)
+	return users, err
+}
+
+func GetManagers() ([]*User, error) {
+	var users []*User
+	var match = mongodb.Match(bson.M{
+		"role": "manager",
+		"dtime": bson.M{
+			"$ne": 0,
+		},
+	})
+	var selfJoin = mongodb.Join("user", "restaurant_id", "_id", "restaurant")
+	var unwind = mongodb.Unwind("restaurant")
+	var project = mongodb.Project(bson.M{
+		"_id":             "$_id",
+		"name":            "$name",
+		"phone":           "$phone",
+		"restaurant_id":   "$restaurant._id",
+		"restaurant_name": "$restaurant.restaurant_name",
+		"ctime":           "$ctime",
+	})
+	var orderby = mongodb.OrderBy("ctime", -1)
+	var pipe = []bson.M{match, selfJoin, unwind, project, orderby}
+	err := userTable.Pipe(pipe).All(&users)
 	return users, err
 }
 

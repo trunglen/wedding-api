@@ -21,10 +21,22 @@ func NewUserServer(parent *gin.RouterGroup, name string) *UserServer {
 	s.POST("create", s.create)
 	s.GET("delete", s.delete)
 	s.GET("get", s.get)
+	s.POST("password/change", s.changePassword)
 	s.POST("supervisor/update", s.updateSupervisor)
 	s.POST("student/update", s.updateStudent)
 
 	return &s
+}
+
+func (s *UserServer) changePassword(c *gin.Context) {
+	var body = struct {
+		UserID      string `json:"user_id"`
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}{}
+	web.AssertNil(c.BindJSON(&body))
+	web.AssertNil(user.ChangePassword(body.UserID, body.OldPassword, body.NewPassword))
+	s.Success(c)
 }
 
 func (s *UserServer) list(c *gin.Context) {

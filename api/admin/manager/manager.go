@@ -28,7 +28,7 @@ func NewManagerServer(parent *gin.RouterGroup, name string) *ManagerServer {
 }
 
 func (s *ManagerServer) getUsers(c *gin.Context) {
-	var users, err = user.GetUsers("manager")
+	var users, err = user.GetManagers()
 	web.AssertNil(err)
 	s.SendData(c, users)
 }
