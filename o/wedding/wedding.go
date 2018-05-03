@@ -21,7 +21,7 @@ type Wedding struct {
 	mongodb.Model    `bson:",inline"`
 	Phone            string    `bson:"phone" json:"phone"`
 	Address          Address   `bson:"address" json:"address"`
-	HTime            string    `bson:"htime" json:"htime"`
+	HTime            int64     `bson:"htime" json:"htime"`
 	RestaurantID     string    `bson:"restaurant_id" json:"restaurant_id"`
 	CreatedBy        string    `bson:"created_by" json:"created_by"`
 	Students         []Student `bson:"students" json:"students"`

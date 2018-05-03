@@ -14,7 +14,7 @@ func GetMyWeddingByStatus(userID string, status string, page int) ([]*Wedding, e
 	var result []*Wedding
 	var query = bson.M{
 		"students.id": userID,
-		// "status":      status,
+		"status":      status,
 	}
 	// if status == "missing" {
 	// 	query["$where"] = "this.students.filter(x=>x.sex==true).length<5"
