@@ -26,7 +26,8 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("wedding/join", s.joinWedding)
 	s.POST("wedding/move", s.moveToWedding)
 	s.POST("wedding/finish", s.finishWedding)
-	s.GET("wedding/list", s.listWedding)
+	s.GET("wedding/list/mine", s.listWedding)
+	s.GET("wedding/list/missing", s.listMissingWedding)
 	return &s
 }
 
@@ -114,7 +115,7 @@ func (s *StudentServer) listWedding(c *gin.Context) {
 	var user = cache.MustGetStudent(c)
 	var status = c.Query("status")
 	var page, _ = strconv.ParseInt(c.Query("page"), 10, 32)
-	var wed, err = wedding.GetWeddingByStatus(user.ID, user.Information.Sex, status, int(page))
+	var wed, err = wedding.GetMyWeddingByStatus(user.ID, status, int(page))
 	web.AssertNil(err)
 	s.SendData(c, wed)
 }

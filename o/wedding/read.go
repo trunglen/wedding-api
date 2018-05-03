@@ -10,15 +10,29 @@ func GetWeddings() ([]*Wedding, error) {
 	return result, err
 }
 
-func GetWeddingByStatus(userID string, sex bool, status string, page int) ([]*Wedding, error) {
+func GetMyWeddingByStatus(userID string, status string, page int) ([]*Wedding, error) {
 	var result []*Wedding
 	var query = bson.M{
 		"students.id": userID,
-		"status":      status,
+		// "status":      status,
 	}
-	if status == "missing" {
-		query["$where"] = "this.students.filter(x=>x.sex==true).length<5"
+	// if status == "missing" {
+	// 	query["$where"] = "this.students.filter(x=>x.sex==true).length<5"
+	// }
+	var err = weddingTable.Find(query).Skip((page - 1) * LIMIT).Limit(LIMIT).All(&result)
+	return result, err
+}
+
+func GetMisingWedding(userID string, sex bool, page int) ([]*Wedding, error) {
+	var result []*Wedding
+	var query = bson.M{
+		"students.id": bson.M{
+			"$ne": userID,
+		},
+		"status": STATUS_NEW,
+		"$where": "this.students.filter(x=>x.sex==true).length<5",
 	}
+
 	var err = weddingTable.Find(query).Skip((page - 1) * LIMIT).Limit(LIMIT).All(&result)
 	return result, err
 }
