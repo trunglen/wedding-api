@@ -9,12 +9,12 @@ var pushTable = mongodb.NewTable("push_token", "push")
 
 type PushToken struct {
 	PushToken string `bson:"push_token" json:"push_token" `
-	DeviceID  string `bson:"device_id" json:"device_id" `
+	UserID    string `bson:"user_id" json:"user_id" `
 }
 
 func (push *PushToken) Create() error {
 	var _, err = pushTable.Upsert(bson.M{
-		"device_id": push.DeviceID,
+		"user_id": push.UserID,
 	}, push)
 	return err
 }

@@ -3,10 +3,9 @@ package student
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"wedding-api/cache"
+	"wedding-api/o/push_token"
 	"wedding-api/o/user"
-	"wedding-api/o/wedding"
 )
 
 type StudentServer struct {
@@ -28,6 +27,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("wedding/finish", s.finishWedding)
 	s.GET("wedding/list/mine", s.listWedding)
 	s.GET("wedding/list/missing", s.listMissingWedding)
+	s.GET("pust_token/register", s.registerPushToken)
 	return &s
 }
 
@@ -81,41 +81,11 @@ func (s *StudentServer) changePassword(c *gin.Context) {
 	s.Success(c)
 }
 
-func (s *StudentServer) joinWedding(c *gin.Context) {
-	var user = cache.MustGetStudent(c)
-	var weddingID = c.Query("wedding_id")
-	var wed, _ = wedding.GetWedding(weddingID)
-	web.AssertNil(wed.AcceptStudent(wedding.Student{
-		ID:     user.ID,
-		Name:   user.Name,
-		Sex:    user.Information.Sex,
-		Status: wedding.STATUS_STUDENT_JOIN,
-		Phone:  user.Phone,
-	}))
-	s.SendData(c, wed)
-}
-
-func (s *StudentServer) moveToWedding(c *gin.Context) {
-	var user = cache.MustGetStudent(c)
-	var weddingID = c.Query("wedding_id")
-	var wed, _ = wedding.GetWedding(weddingID)
-	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_MOVE)))
-	s.SendData(c, wed)
-}
-
-func (s *StudentServer) finishWedding(c *gin.Context) {
-	var user = cache.MustGetStudent(c)
-	var weddingID = c.Query("wedding_id")
-	var wed, _ = wedding.GetWedding(weddingID)
-	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_FINISH)))
-	s.SendData(c, wed)
-}
-
-func (s *StudentServer) listWedding(c *gin.Context) {
-	var user = cache.MustGetStudent(c)
-	var status = c.Query("status")
-	var page, _ = strconv.ParseInt(c.Query("page"), 10, 32)
-	var wed, err = wedding.GetMyWeddingByStatus(user.ID, status, int(page))
-	web.AssertNil(err)
-	s.SendData(c, wed)
+func (s *StudentServer) registerPushToken(c *gin.Context) {
+	var u = cache.MustGetStudent(c)
+	var body = push_token.PushToken{}
+	body.UserID = u.ID
+	web.AssertNil(c.BindJSON(&body))
+	web.AssertNil(body.Create())
+	s.Success(c)
 }
