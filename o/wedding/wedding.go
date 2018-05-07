@@ -1,6 +1,7 @@
 package wedding
 
 import (
+	"fmt"
 	"g/x/math"
 	"g/x/web"
 	"gopkg.in/mgo.v2/bson"
@@ -130,6 +131,7 @@ func (w *Wedding) CheckExistStudent(s Student) error {
 
 // GetWeddingsByRole GetWeddingsByRole
 func GetWeddingsByRole(userID string, role string) ([]*Wedding, error) {
+	fmt.Println(userID, role)
 	var result []*Wedding
 	var query = bson.M{}
 	if role != "super-admin" {

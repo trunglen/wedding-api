@@ -4,6 +4,7 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/middleware"
+	"wedding-api/o/auth"
 	"wedding-api/o/wedding"
 )
 
@@ -34,7 +35,9 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 }
 
 func (s *ManagerServer) getWeddings(c *gin.Context) {
-	var result, err = wedding.GetWeddings()
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
 	web.AssertNil(err)
 	s.SendData(c, result)
 }

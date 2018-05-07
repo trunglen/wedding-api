@@ -47,6 +47,20 @@ func (s *StudentServer) finishWedding(c *gin.Context) {
 	web.AssertNil(c.BindJSON(&body))
 	var wed, _ = wedding.GetWedding(body.WeddingID)
 	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_FINISH), body.VerifyCode))
+	web.AssertNil(user.UpBalance(wed.Price))
+	s.SendData(c, wed)
+}
+
+func (s *StudentServer) cancelWedding(c *gin.Context) {
+	var user = cache.MustGetStudent(c)
+	var body = struct {
+		WeddingID  string `json:"wedding_id"`
+		VerifyCode string `json:"verify_code"`
+	}{}
+	web.AssertNil(c.BindJSON(&body))
+	var wed, _ = wedding.GetWedding(body.WeddingID)
+	web.AssertNil(wed.UpdateStudentStatus(user.ToStudent(wedding.STATUS_STUDENT_FINISH), body.VerifyCode))
+	web.AssertNil(user.UpBalance(wed.Price))
 	s.SendData(c, wed)
 }
 

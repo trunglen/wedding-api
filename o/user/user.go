@@ -39,15 +39,17 @@ type User struct {
 }
 
 type Information struct {
-	Weight       float32 `bson:"weight" json:"weight"`
-	Height       float32 `bson:"height" json:"height"`
-	Sex          bool    `bson:"sex" json:"sex"`
-	Rating       float32 `bson:"rating" json:"rating"`
-	Balance      float32 `bson:"balance" json:"balance"`
-	RestaurantID string  `bson:"restaurant_id" json:"restaurant_id,omitempty"`
-	Avatar       string  `bson:"-" json:"avatar"`
-	Portrait     string  `bson:"-" json:"portrait"`
-	BirthYear    int     `bson:"birth_year" json:"birth_year"`
+	Weight          float32 `bson:"weight" json:"weight"`
+	Height          float32 `bson:"height" json:"height"`
+	Sex             bool    `bson:"sex" json:"sex"`
+	Rating          float32 `bson:"rating" json:"rating"`
+	BirthYear       int     `bson:"birth_year" json:"birth_year"`
+	Balance         float32 `bson:"balance" json:"balance"`
+	FinishedWedding int     `bson:"finished_wedding" json:"finished_wedding"`
+	CanceledWedding int     `bson:"canceled_wedding" json:"canceled_wedding"`
+	RestaurantID    string  `bson:"restaurant_id" json:"restaurant_id,omitempty"`
+	Avatar          string  `bson:"-" json:"avatar"`
+	Portrait        string  `bson:"-" json:"portrait"`
 }
 
 const (
