@@ -27,7 +27,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("wedding/finish", s.finishWedding)
 	s.GET("wedding/list/mine", s.listWedding)
 	s.GET("wedding/list/missing", s.listMissingWedding)
-	s.GET("pust_token/register", s.registerPushToken)
+	s.POST("push_token/register", s.registerPushToken)
 	return &s
 }
 

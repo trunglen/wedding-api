@@ -60,12 +60,16 @@ func (w *Wedding) AcceptStudent(s Student) error {
 		return web.BadRequest("Đám này đã đủ số lượng")
 	}
 	w.Students = append(w.Students, s)
-	return weddingTable.UpdateId(w.ID, bson.M{"$push": bson.M{
+	var update = bson.M{"$push": bson.M{
 		"students": s,
-	}})
+	}}
+	if len(w.Students) == w.NumberOfStudents {
+		update["status"] = STATUS_FULL
+	}
+	return weddingTable.UpdateId(w.ID, update)
 }
 
-func (w *Wedding) UpdateStudentStatus(s Student) error {
+func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	var countStatus = 0
 	for i, item := range w.Students {
 		if item.Status == s.Status {
@@ -77,11 +81,10 @@ func (w *Wedding) UpdateStudentStatus(s Student) error {
 	}
 	var update = bson.M{}
 	if countStatus == len(w.Students) && len(w.Students) == w.NumberOfStudents {
-		if s.Status == STATUS_STUDENT_MOVE {
-			update["status"] = STATUS_SAFE
-		} else if s.Status == STATUS_STUDENT_FINISH {
-			update["status"] = STATUS_STUDENT_FINISH
+		if w.VerifyCode != verifyCode {
+			return web.BadRequest("Mã xác nhận không chính xác")
 		}
+		update["status"] = s.Status
 
 	}
 	update["students"] = w.Students
