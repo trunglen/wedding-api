@@ -23,6 +23,7 @@ type Wedding struct {
 	Address          Address   `bson:"address" json:"address"`
 	HTime            int64     `bson:"htime" json:"htime"`
 	RestaurantID     string    `bson:"restaurant_id" json:"restaurant_id"`
+	Price            int64     `bson:"price" json:"price"`
 	CreatedBy        string    `bson:"created_by" json:"created_by"`
 	Students         []Student `bson:"students" json:"students"`
 	Status           Status    `bson:"status" json:"status"`
@@ -86,9 +87,7 @@ func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	}
 	var update = bson.M{}
 	if countStatus == len(w.Students) && len(w.Students) == w.NumberOfStudents {
-
 		update["status"] = s.Status
-
 	}
 	update["students"] = w.Students
 	return weddingTable.UpdateId(w.ID, bson.M{"$set": update})
@@ -127,4 +126,15 @@ func (w *Wedding) CheckExistStudent(s Student) error {
 		}
 	}
 	return nil
+}
+
+// GetWeddingsByRole GetWeddingsByRole
+func GetWeddingsByRole(userID string, role string) ([]*Wedding, error) {
+	var result []*Wedding
+	var query = bson.M{}
+	if role != "super-admin" {
+		query["restaurant_id"] = userID
+	}
+	var err = weddingTable.FindWhere(query, &result)
+	return result, err
 }

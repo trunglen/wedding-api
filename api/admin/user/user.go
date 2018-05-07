@@ -4,6 +4,7 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/middleware"
+	"wedding-api/o/auth"
 	"wedding-api/o/user"
 )
 
@@ -41,7 +42,9 @@ func (s *UserServer) changePassword(c *gin.Context) {
 
 func (s *UserServer) list(c *gin.Context) {
 	var role = c.Query("role")
-	var users, err = user.GetUsers(role)
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	users, err := user.GetUsersByRole(role, au.UserID, au.Role)
 	web.AssertNil(err)
 	s.SendData(c, users)
 }

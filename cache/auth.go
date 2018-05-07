@@ -14,7 +14,7 @@ func MustGetAuth(token string) (*auth.Auth, error) {
 		authCache[authen.ID] = authen
 		return authen, nil
 	}
-	web.AssertNil(web.BadRequest("access_token not found"))
+	web.AssertNil(web.Unauthorized("access_token not found"))
 	return nil, err
 }
 

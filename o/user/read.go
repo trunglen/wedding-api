@@ -12,15 +12,29 @@ func GetByID(id string) (*User, error) {
 	var user *User
 	return user, userTable.FindID(id, &user)
 }
-
 func GetUsers(role string) ([]*User, error) {
 	var users []*User
-	err := userTable.Find(bson.M{
+	var query = bson.M{
 		"role": role,
 		"dtime": bson.M{
 			"$ne": 0,
 		},
-	}).Sort("-ctime").All(&users)
+	}
+	err := userTable.Find(query).Sort("-ctime").All(&users)
+	return users, err
+}
+func GetUsersByRole(role, userID, userRole string) ([]*User, error) {
+	var users []*User
+	var query = bson.M{
+		"role": role,
+		"dtime": bson.M{
+			"$ne": 0,
+		},
+	}
+	if userRole != "super-admin" {
+		query["restaurant_id"] = userID
+	}
+	err := userTable.Find(query).Sort("-ctime").All(&users)
 	return users, err
 }
 

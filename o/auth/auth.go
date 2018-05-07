@@ -44,3 +44,7 @@ func GetTokens() ([]*Auth, error) {
 func RemoveToken(userID string) {
 	authTable.Remove(bson.M{"user_id": userID})
 }
+
+func MustGetToken(token string) {
+
+}

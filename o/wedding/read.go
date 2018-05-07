@@ -25,7 +25,7 @@ func GetMyWeddingByStatus(userID string, status string, page int) ([]*Wedding, e
 	// if status == "missing" {
 	// 	query["$where"] = "this.students.filter(x=>x.sex==true).length<5"
 	// }
-	var err = weddingTable.Find(query).Skip((page - 1) * LIMIT).Limit(LIMIT).All(&result)
+	var err = weddingTable.Find(query).Sort("-$ctime").Skip((page - 1) * LIMIT).Limit(LIMIT).All(&result)
 	return result, err
 }
 
