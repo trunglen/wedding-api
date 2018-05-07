@@ -40,3 +40,7 @@ func GetTokens() ([]*Auth, error) {
 	var auth []*Auth
 	return auth, authTable.FindAll(&auth)
 }
+
+func RemoveToken(userID string) {
+	authTable.Remove(bson.M{"user_id": userID})
+}

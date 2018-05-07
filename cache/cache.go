@@ -28,6 +28,15 @@ func loadAuthCache() {
 	cacheLog.Infof("cache %d token", len(res))
 }
 
+func RemoveToken(userID string) {
+	for _, item := range authCache {
+		if item.UserID == userID {
+			delete(authCache, item.ID)
+		}
+	}
+	auth.RemoveToken(userID)
+}
+
 func loadStudentCache() {
 	var res, err = user.GetUsers("student")
 	if err == nil && res != nil {

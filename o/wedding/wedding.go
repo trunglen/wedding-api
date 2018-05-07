@@ -71,6 +71,11 @@ func (w *Wedding) AcceptStudent(s Student) error {
 
 func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	var countStatus = 0
+	if s.Status == STATUS_FINISH {
+		if w.VerifyCode != verifyCode {
+			return web.BadRequest("Mã xác nhận không chính xác")
+		}
+	}
 	for i, item := range w.Students {
 		if item.Status == s.Status {
 			countStatus++
@@ -81,9 +86,7 @@ func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	}
 	var update = bson.M{}
 	if countStatus == len(w.Students) && len(w.Students) == w.NumberOfStudents {
-		if w.VerifyCode != verifyCode {
-			return web.BadRequest("Mã xác nhận không chính xác")
-		}
+
 		update["status"] = s.Status
 
 	}

@@ -1,6 +1,7 @@
 package student
 
 import (
+	"fmt"
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/cache"
@@ -18,6 +19,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 		RouterGroup: parent.Group(name),
 	}
 	s.POST("login", s.login)
+	s.GET("logout", s.logout)
 	s.POST("profile/update", s.updateProfile)
 	s.POST("password/change", s.changePassword)
 	s.POST("avatar", s.uploadAvatar)
@@ -39,6 +41,7 @@ func (s *StudentServer) login(c *gin.Context) {
 	web.AssertNil(c.BindJSON(&loginInfo))
 	user, err := user.LoginByStudent(loginInfo.Phone, loginInfo.Password)
 	web.AssertNil(err)
+	cache.RemoveToken(user.ID)
 	var auth = cache.CreateAuth(user.ID, user.Role)
 	s.SendData(c, map[string]interface{}{
 		"token":     auth.ID,
@@ -46,19 +49,30 @@ func (s *StudentServer) login(c *gin.Context) {
 	})
 }
 
+func (s *StudentServer) logout(c *gin.Context) {
+	var user = cache.MustGetStudent(c)
+	cache.RemoveToken(user.ID)
+	fmt.Println(c.Request.Host)
+	s.Success(c)
+}
+
 func (s *StudentServer) uploadAvatar(c *gin.Context) {
 	var user = cache.MustGetStudent(c)
 	var file, err = c.FormFile("avatar")
 	web.AssertNil(err)
 	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/avatar/"+user.ID))
-	s.Success(c)
+	s.SendData(c, map[string]interface{}{
+		"url": "http://" + c.Request.Host + "/student/avatar/" + user.ID,
+	})
 }
 func (s *StudentServer) uploadPortrait(c *gin.Context) {
 	var user = cache.MustGetStudent(c)
 	var file, err = c.FormFile("avatar")
 	web.AssertNil(err)
 	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/portrait/"+user.ID))
-	s.Success(c)
+	s.SendData(c, map[string]interface{}{
+		"url": "http://" + c.Request.Host + "/student/portrait/" + user.ID,
+	})
 }
 
 func (s *StudentServer) updateProfile(c *gin.Context) {
