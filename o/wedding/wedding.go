@@ -29,6 +29,8 @@ type Wedding struct {
 	Status           Status    `bson:"status" json:"status"`
 	VerifyCode       string    `bson:"verify_code" json:"verify_code"`
 	NumberOfStudents int       `bson:"number_of_students" json:"number_of_students"`
+	PaidSystem       bool      `bson:"paid_system" json:"paid_system"`
+	PaidStudent      bool      `bson:"paid_student" json:"paid_student"`
 }
 type Status string
 type Student struct {

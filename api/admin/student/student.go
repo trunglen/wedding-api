@@ -18,10 +18,18 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	}
 	s.Use(middleware.MustBeManager)
 	s.GET("list", s.getUsers)
+	s.GET("get", s.getUser)
 	s.POST("create", s.createUser)
 	s.POST("update", s.updateUser)
 	s.GET("delete", s.deleteUser)
 	return &s
+}
+
+func (s *StudentServer) getUser(c *gin.Context) {
+	var id = c.Query("id")
+	var user, err = user.GetByID(id)
+	web.AssertNil(err)
+	s.SendData(c, user)
 }
 
 func (s *StudentServer) getUsers(c *gin.Context) {
