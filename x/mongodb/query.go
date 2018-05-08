@@ -27,9 +27,13 @@ func Project(match bson.M) bson.M {
 }
 func Unwind(field string) bson.M {
 	return bson.M{
-		"$unwind": bson.M{
-			"path": "$" + field,
-		},
+		"$unwind": "$" + field,
+	}
+}
+
+func AddField(fields bson.M) bson.M {
+	return bson.M{
+		"$addFields": fields,
 	}
 }
 func OrderBy(field string, order int) bson.M {

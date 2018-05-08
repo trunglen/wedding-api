@@ -8,6 +8,14 @@ import (
 	"wedding-api/o/wedding"
 )
 
+func (s *StudentServer) getWedding(c *gin.Context) {
+	cache.MustGetStudent(c)
+	var id = c.Query("id")
+	var wed, err = wedding.GetWeddingDetail(id)
+	web.AssertNil(err)
+	s.SendData(c, wed)
+}
+
 func (s *StudentServer) listMissingWedding(c *gin.Context) {
 	var user = cache.MustGetStudent(c)
 	var page, _ = strconv.ParseInt(c.Query("page"), 10, 32)

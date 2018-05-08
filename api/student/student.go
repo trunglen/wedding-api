@@ -24,6 +24,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("password/change", s.changePassword)
 	s.POST("avatar", s.uploadAvatar)
 	s.POST("portrait", s.uploadPortrait)
+	s.GET("wedding/get", s.getWedding)
 	s.POST("wedding/join", s.joinWedding)
 	s.POST("wedding/move", s.moveToWedding)
 	s.POST("wedding/finish", s.finishWedding)
