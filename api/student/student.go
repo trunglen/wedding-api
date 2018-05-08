@@ -69,7 +69,7 @@ func (s *StudentServer) uploadAvatar(c *gin.Context) {
 }
 func (s *StudentServer) uploadPortrait(c *gin.Context) {
 	var user = cache.MustGetStudent(c)
-	var file, err = c.FormFile("avatar")
+	var file, err = c.FormFile("portrait")
 	web.AssertNil(err)
 	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/portrait/"+user.ID))
 	s.SendData(c, map[string]interface{}{
