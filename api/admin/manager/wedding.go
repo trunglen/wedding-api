@@ -16,7 +16,10 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 	web.AssertNil(wedding.Create())
 	var userIDS = user.GetUserIDByRestaurantID(wedding.RestaurantID)
 	var pushTokens, _ = push_token.GetAllPushToken(userIDS)
-	fcm.SendToMany(pushTokens, fcm.FmcMessage{Title: "Hello", Body: "Anh"})
+	fcm.SendToMany(pushTokens, fcm.FmcMessage{Title: "Có một đám cưới mới", Body: "Có một đám cưới mới", Data: map[string]interface{}{
+		"title": "Có một đám cưới mới",
+		"id":    wedding.ID,
+	}})
 	s.SendData(c, wedding)
 }
 

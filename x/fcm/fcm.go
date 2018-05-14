@@ -15,6 +15,7 @@ type FcmClient struct {
 type FmcMessage struct {
 	Title string `json:"title,omitempty"`
 	Body  string `json:"body,omitempty"`
+	Data  map[string]interface{}
 }
 
 var f = &FcmClient{}
@@ -34,6 +35,7 @@ func SendToMany(ids []string, data FmcMessage) (error, string) {
 	}
 	f.NewFcmRegIdsMsg(ids, data)
 	f.SetNotificationPayload(&noti)
+	f.SetMsgData(data.Data)
 	status, err := f.Send()
 	if err != nil {
 		return err, RESPONSE_FAIL
