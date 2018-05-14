@@ -110,20 +110,6 @@ func DeleteUserByID(id string) error {
 	return userTable.DeleteByID(id)
 }
 
-func (u *User) UpdateProfile() error {
-	return userTable.UpdateId(u.ID, bson.M{
-		"$set": bson.M{
-			"name": u.Name,
-			"information": bson.M{
-				"weight":     u.Information.Weight,
-				"height":     u.Information.Height,
-				"sex":        u.Information.Sex,
-				"birth_year": u.Information.BirthYear,
-			},
-		},
-	})
-}
-
 func ChangePassword(id, oldPwd, newPwd string) error {
 	var user *User
 	userTable.FindID(id, &user)

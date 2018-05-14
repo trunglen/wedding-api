@@ -101,3 +101,20 @@ func LoginByStudent(uname, pwd string) (*User, error) {
 	}
 	return user, nil
 }
+
+func GetUserByRestaurantID(restaurantID string) ([]*User, error) {
+	var user []*User
+	err := userTable.FindWhere(bson.M{"restaurant_id": restaurantID}, &user)
+	return user, err
+}
+
+func GetUserIDByRestaurantID(restaurantID string) []string {
+	var users, _ = GetUserByRestaurantID(restaurantID)
+	var userIDS = make([]string, 0)
+	if users != nil {
+		for _, item := range users {
+			userIDS = append(userIDS, item.ID)
+		}
+	}
+	return userIDS
+}

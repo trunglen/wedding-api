@@ -64,7 +64,7 @@ func (s *StudentServer) uploadAvatar(c *gin.Context) {
 	web.AssertNil(err)
 	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/avatar/"+user.ID))
 	s.SendData(c, map[string]interface{}{
-		"url": "http://" + c.Request.Host + "/student/avatar/" + user.ID,
+		"url": "http://" + c.Request.Host + "/static/student/avatar/" + user.ID,
 	})
 }
 func (s *StudentServer) uploadPortrait(c *gin.Context) {
@@ -73,7 +73,7 @@ func (s *StudentServer) uploadPortrait(c *gin.Context) {
 	web.AssertNil(err)
 	web.AssertNil(c.SaveUploadedFile(file, "./upload/student/portrait/"+user.ID))
 	s.SendData(c, map[string]interface{}{
-		"url": "http://" + c.Request.Host + "/student/portrait/" + user.ID,
+		"url": "http://" + c.Request.Host + "/static/student/portrait/" + user.ID,
 	})
 }
 

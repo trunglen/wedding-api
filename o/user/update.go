@@ -12,3 +12,16 @@ func (u *User) UpBalance(money int64) error {
 		},
 	})
 }
+func (u *User) UpdateProfile() error {
+	return userTable.UpdateId(u.ID, bson.M{
+		"$set": bson.M{
+			"name": u.Name,
+			"information": bson.M{
+				"weight":     u.Information.Weight,
+				"height":     u.Information.Height,
+				"sex":        u.Information.Sex,
+				"birth_year": u.Information.BirthYear,
+			},
+		},
+	})
+}

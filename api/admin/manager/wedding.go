@@ -4,13 +4,19 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/o/auth"
+	"wedding-api/o/push_token"
+	"wedding-api/o/user"
 	"wedding-api/o/wedding"
+	"wedding-api/x/fcm"
 )
 
 func (s *ManagerServer) createWedding(c *gin.Context) {
 	var wedding *wedding.Wedding
 	web.AssertNil(c.BindJSON(&wedding))
 	web.AssertNil(wedding.Create())
+	var userIDS = user.GetUserIDByRestaurantID(wedding.RestaurantID)
+	var pushTokens, _ = push_token.GetAllPushToken(userIDS)
+	fcm.SendToMany(pushTokens, fcm.FmcMessage{Title: "Hello", Body: "Anh"})
 	s.SendData(c, wedding)
 }
 

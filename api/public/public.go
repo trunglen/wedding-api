@@ -18,6 +18,7 @@ func NewPublicServer(parent *gin.RouterGroup, name string) *PublicServer {
 		RouterGroup: parent.Group(name),
 	}
 	s.POST("push_token/create", s.createPush)
+	s.GET("push_token/test", s.test)
 	return &s
 }
 

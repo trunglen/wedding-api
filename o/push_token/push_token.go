@@ -19,10 +19,10 @@ func (push *PushToken) Create() error {
 	return err
 }
 
-func GetAllPushToken() ([]string, error) {
+func GetAllPushToken(userID []string) ([]string, error) {
 	var push []*PushToken
-	var result []string
-	var err = pushTable.FindAll(&push)
+	var result = make([]string, 0)
+	var err = pushTable.FindWhere(bson.M{"user_id": bson.M{"$in": userID}}, &push)
 	if push != nil {
 		for _, item := range push {
 			result = append(result, item.PushToken)
