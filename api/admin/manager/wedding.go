@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/o/auth"
@@ -16,10 +17,14 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 	web.AssertNil(wedding.Create())
 	var userIDS = user.GetUserIDByRestaurantID(wedding.RestaurantID)
 	var pushTokens, _ = push_token.GetAllPushToken(userIDS)
-	fcm.SendToMany(pushTokens, fcm.FmcMessage{Title: "Có một đám cưới mới", Body: "Có một đám cưới mới", Data: map[string]interface{}{
-		"title": "Có một đám cưới mới",
-		"id":    wedding.ID,
-	}})
+	var address = wedding.Address
+	fcm.SendToMany(pushTokens, fcm.FmcMessage{
+		Title: fmt.Sprintf("Đám cưới mới: Số nhà %s, đường %s, quận %s", address.HomeNumber, address.Street, address.District),
+		Body:  fmt.Sprintf("%d", wedding.Price),
+		Data: map[string]interface{}{
+			"title": "Có một đám cưới mới",
+			"id":    wedding.ID,
+		}})
 	s.SendData(c, wedding)
 }
 

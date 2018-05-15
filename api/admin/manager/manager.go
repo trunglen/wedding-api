@@ -4,6 +4,7 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/middleware"
+	"wedding-api/o/auth"
 	"wedding-api/o/user"
 )
 
@@ -28,7 +29,14 @@ func NewManagerServer(parent *gin.RouterGroup, name string) *ManagerServer {
 }
 
 func (s *ManagerServer) getUsers(c *gin.Context) {
-	var users, err = user.GetManagers()
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	var users []*user.User
+	if au.Role == "super-admin" {
+		users, err = user.GetManagers()
+	} else {
+		users, err = user.GetUsersByRole("manager", au.UserID, au.Role)
+	}
 	web.AssertNil(err)
 	s.SendData(c, users)
 }

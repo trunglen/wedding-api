@@ -43,7 +43,7 @@ type Information struct {
 	Height          float32 `bson:"height" json:"height"`
 	Sex             bool    `bson:"sex" json:"sex"`
 	Rating          float32 `bson:"rating" json:"rating"`
-	BirthYear       int     `bson:"birth_year" json:"birth_year"`
+	BirthDay        string  `bson:"birth_day" json:"birth_day"`
 	Balance         float32 `bson:"balance" json:"balance"`
 	FinishedWedding int     `bson:"finished_wedding" json:"finished_wedding"`
 	CanceledWedding int     `bson:"canceled_wedding" json:"canceled_wedding"`

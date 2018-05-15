@@ -84,10 +84,11 @@ func (s *StudentServer) uploadPortrait(c *gin.Context) {
 func (s *StudentServer) updateProfile(c *gin.Context) {
 	var usr = cache.MustGetStudent(c)
 	var u *user.User
-	u.ID = usr.ID
 	web.AssertNil(c.BindJSON(&u))
+	u.ID = usr.ID
 	web.AssertNil(u.UpdateProfile())
-	s.Success(c)
+	u.SetAvatarAndUpload(c.Request)
+	s.SendData(c, u)
 }
 
 func (s *StudentServer) changePassword(c *gin.Context) {

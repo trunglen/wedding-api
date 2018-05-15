@@ -3,9 +3,13 @@ package manager
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	"wedding-api/middleware"
 	"wedding-api/o/auth"
+	"wedding-api/o/push_token"
+	"wedding-api/o/user"
 	"wedding-api/o/wedding"
+	"wedding-api/x/fcm"
 )
 
 type ManagerServer struct {
@@ -31,6 +35,15 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 	var wedding *wedding.Wedding
 	web.AssertNil(c.BindJSON(&wedding))
 	web.AssertNil(wedding.Create())
+	var userIDS = user.GetUserIDByRestaurantID(wedding.RestaurantID)
+	var pushTokens, _ = push_token.GetAllPushToken(userIDS)
+	glog.Info(pushTokens)
+	go func() {
+		fcm.SendToMany(pushTokens, fcm.FmcMessage{Title: "Có một đám cưới mới", Body: "Có một đám cưới mới", Data: map[string]interface{}{
+			"title": "Có một đám cưới mới",
+			"id":    wedding.ID,
+		}})
+	}()
 	s.SendData(c, wedding)
 }
 

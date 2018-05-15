@@ -29,6 +29,8 @@ type Wedding struct {
 	Status           Status    `bson:"status" json:"status"`
 	VerifyCode       string    `bson:"verify_code" json:"verify_code"`
 	NumberOfStudents int       `bson:"number_of_students" json:"number_of_students"`
+	Clothes          string    `bson:"clothes" json:"clothes"`
+	Note             string    `bson:"note" json:"note"`
 	PaidSystem       bool      `bson:"paid_system" json:"paid_system"`
 	PaidStudent      bool      `bson:"paid_student" json:"paid_student"`
 }
@@ -135,7 +137,11 @@ func GetWeddingsByRole(userID string, role string) ([]*Wedding, error) {
 	var result []*Wedding
 	var query = bson.M{}
 	if role != "super-admin" {
-		query["restaurant_id"] = userID
+		if role == "manager" {
+			query["created_by"] = userID
+		} else {
+			query["restaurant_id"] = userID
+		}
 	}
 	var err = weddingTable.FindWhere(query, &result)
 	return result, err
