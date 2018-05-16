@@ -4,6 +4,7 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/o/auth"
+	"wedding-api/o/user"
 	"wedding-api/o/wedding"
 )
 
@@ -12,8 +13,12 @@ func (s *SupervisorServer) getGeneralReport(c *gin.Context) {
 	web.AssertNil(err)
 	var res = struct {
 		*wedding.GeneralReport
+		Cashback int `json:"cashback"`
 	}{}
 	general, err := wedding.GetGeneralReportBySupervisor(au.UserID, au.Role)
+	cashback := user.GetStudentCashback(au.UserID, "supervisor")
 	web.AssertNil(err)
-	s.SendData(c, generral)
+	res.GeneralReport = general
+	res.Cashback = cashback
+	s.SendData(c, res)
 }
