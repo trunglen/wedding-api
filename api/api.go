@@ -7,6 +7,7 @@ import (
 	"wedding-api/api/manager"
 	"wedding-api/api/public"
 	"wedding-api/api/student"
+	"wedding-api/api/supervisor"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +17,7 @@ func NewApiServer(root *gin.RouterGroup) {
 	auth.NewAuthServer(root, "auth")
 	public.NewPublicServer(root, "public")
 	guest.NewGuestServer(root, "guest")
+	supervisor.NewSupervisorServer(root, "supervisor")
 	manager.NewManagerServer(root, "manager")
 	student.NewStudentServer(root, "student")
 }

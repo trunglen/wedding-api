@@ -1,4 +1,4 @@
-package student
+package supervisor
 
 import (
 	"g/x/web"
@@ -21,6 +21,8 @@ func NewSupervisorServer(parent *gin.RouterGroup, name string) *SupervisorServer
 	s.POST("create", s.createUser)
 	s.POST("update", s.updateUser)
 	s.GET("delete", s.deleteUser)
+	s.GET("report/general", s.getGeneralReport)
+
 	return &s
 }
 
