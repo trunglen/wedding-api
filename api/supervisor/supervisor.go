@@ -3,7 +3,7 @@ package supervisor
 import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
-	"wedding-api/middleware"
+	// "wedding-api/middleware"
 	"wedding-api/o/user"
 )
 
@@ -16,7 +16,7 @@ func NewSupervisorServer(parent *gin.RouterGroup, name string) *SupervisorServer
 	var s = SupervisorServer{
 		RouterGroup: parent.Group(name),
 	}
-	s.Use(middleware.MustBeManager)
+	// s.Use(middleware.MustBeManager)
 	s.GET("list", s.getUsers)
 	s.POST("create", s.createUser)
 	s.POST("update", s.updateUser)

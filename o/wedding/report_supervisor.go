@@ -39,9 +39,9 @@ func GetGeneralReportBySupervisor(userID string, role string) (*GeneralReport, e
 	}
 	var pipe = []bson.M{}
 	if role == "super-admin" {
-		pipe = []bson.M{match, project, group}
-	} else {
 		pipe = []bson.M{project, group}
+	} else {
+		pipe = []bson.M{match, project, group}
 	}
 	err := weddingTable.Pipe(pipe).One(&res)
 	return res, err
