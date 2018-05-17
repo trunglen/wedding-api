@@ -5,6 +5,7 @@ import (
 	"g/x/web"
 	"github.com/gin-gonic/gin"
 	"wedding-api/o/push_token"
+	"wedding-api/o/wedding"
 	"wedding-api/x/fcm"
 )
 
@@ -19,6 +20,7 @@ func NewPublicServer(parent *gin.RouterGroup, name string) *PublicServer {
 	}
 	s.POST("push_token/create", s.createPush)
 	s.GET("push_token/test", s.test)
+	s.GET("test", s.testPublic)
 	return &s
 }
 
@@ -28,6 +30,12 @@ func (s *PublicServer) test(c *gin.Context) {
 	fmt.Println(err)
 	fmt.Println(str)
 	s.Success(c)
+}
+
+func (s *PublicServer) testPublic(c *gin.Context) {
+	var res, err = wedding.GetMisingWarningWedding("usr_CUdK1clg5JWyCC5FbDHD")
+	web.AssertNil(err)
+	s.SendData(c, res)
 }
 
 func (s *PublicServer) createPush(c *gin.Context) {

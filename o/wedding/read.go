@@ -2,6 +2,7 @@ package wedding
 
 import (
 	"gopkg.in/mgo.v2/bson"
+	"time"
 	"wedding-api/x/logger"
 	"wedding-api/x/mongodb"
 )
@@ -86,3 +87,18 @@ func DeleteWeddingByID(id string) error {
 }
 
 const LIMIT = 10
+
+func GetMisingWarningWedding(restaurantID string) ([]*Wedding, error) {
+	var result []*Wedding
+	var now = time.Now().Unix() * 1000
+	var warningTime = now - 24*3600*1000
+	var query = bson.M{
+		"restaurant_id": restaurantID,
+		"htime": bson.M{
+			"$gte": warningTime,
+		},
+		"$where": "this.students.filter(x=>x.sex==true).length<this.number_of_students",
+	}
+	var err = weddingTable.Find(query).All(&result)
+	return result, err
+}
