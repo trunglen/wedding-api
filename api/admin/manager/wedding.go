@@ -36,6 +36,22 @@ func (s *ManagerServer) getWeddings(c *gin.Context) {
 	s.SendData(c, result)
 }
 
+func (s *ManagerServer) getMoveWarningWeddings(c *gin.Context) {
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
+	web.AssertNil(err)
+	s.SendData(c, result)
+}
+
+func (s *ManagerServer) getMissingWarningWeddings(c *gin.Context) {
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
+	web.AssertNil(err)
+	s.SendData(c, result)
+}
+
 func (s *ManagerServer) getWedding(c *gin.Context) {
 	var id = c.Query("id")
 	var result, err = wedding.GetWedding(id)

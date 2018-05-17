@@ -1,6 +1,7 @@
 package wedding
 
 import (
+	"github.com/golang/glog"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"wedding-api/x/logger"
@@ -91,13 +92,29 @@ const LIMIT = 10
 func GetMisingWarningWedding(restaurantID string) ([]*Wedding, error) {
 	var result []*Wedding
 	var now = time.Now().Unix() * 1000
-	var warningTime = now - 24*3600*1000
+	var warningTime = now + 24*3600*1000
+	glog.Info(warningTime)
 	var query = bson.M{
 		"restaurant_id": restaurantID,
 		"htime": bson.M{
-			"$gte": warningTime,
+			"$lte": warningTime,
 		},
-		"$where": "this.students.filter(x=>x.sex==true).length<this.number_of_students",
+		"$where": "this.students.length<this.number_of_students",
+	}
+	var err = weddingTable.Find(query).All(&result)
+	return result, err
+}
+
+func GetMoveWarningWedding(restaurantID string) ([]*Wedding, error) {
+	var result []*Wedding
+	var now = time.Now().Unix() * 1000
+	var warningTime = now + 3600*1000
+	var query = bson.M{
+		"restaurant_id": restaurantID,
+		"htime": bson.M{
+			"$lte": warningTime,
+		},
+		"$where": "this.students.filter(x=>x.status=='move').length<this.number_of_students",
 	}
 	var err = weddingTable.Find(query).All(&result)
 	return result, err

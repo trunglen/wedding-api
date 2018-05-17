@@ -25,6 +25,8 @@ func NewManagerServer(parent *gin.RouterGroup, name string) *ManagerServer {
 	s.POST("wedding/create", s.createWedding)
 	s.GET("wedding/list", s.getWeddings)
 	s.GET("wedding/detail", s.getWedding)
+	s.GET("wedding/warning_move/list", s.getWedding)
+	s.GET("wedding/warning_missing/list", s.getWedding)
 	return &s
 }
 
