@@ -3,6 +3,7 @@ package wedding
 import (
 	"github.com/golang/glog"
 	"gopkg.in/mgo.v2/bson"
+	"strconv"
 	"time"
 	"wedding-api/x/logger"
 	"wedding-api/x/mongodb"
@@ -43,7 +44,7 @@ func GetMisingWedding(restaurantID, userID string, sex bool, page int) ([]*Weddi
 		},
 		"restaurant_id": restaurantID,
 		"status":        STATUS_NEW,
-		"$where":        "this.students.filter(x=>x.sex==true).length<5",
+		"$where":        "this.students.filter(x=>x.sex==" + strconv.FormatBool(sex) + ").length<5",
 	}
 
 	var err = weddingTable.Find(query).Skip((page - 1) * LIMIT).Limit(LIMIT).All(&result)
@@ -101,7 +102,7 @@ func GetMisingWarningWedding(restaurantID string) ([]*Wedding, error) {
 		},
 		"$where": "this.students.length<this.number_of_students",
 	}
-	var err = weddingTable.Find(query).All(&result)
+	var err = weddingTable.Find(query).Limit(3).All(&result)
 	return result, err
 }
 

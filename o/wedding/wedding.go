@@ -61,15 +61,23 @@ func (w *Wedding) AcceptStudent(s Student) error {
 	if err := w.CheckExistStudent(s); err != nil {
 		return err
 	}
-	if male, felmale := w.CountNumberStudentAccept(); male == w.NumberOfStudents/2 || felmale == w.NumberOfStudents/2 {
-		return web.BadRequest("Đám này đã đủ số lượng")
+	male, felmale := w.CountNumberStudentAccept()
+	if s.Sex {
+		if male == w.NumberOfStudents/2 {
+			return web.BadRequest("Đám này đã đủ số lượng nam")
+		}
+	} else {
+		if felmale == w.NumberOfStudents/2 {
+			return web.BadRequest("Đám này đã đủ số lượng nữ")
+		}
 	}
 	w.Students = append(w.Students, s)
 	var update = bson.M{"$push": bson.M{
 		"students": s,
 	}}
 	if len(w.Students) == w.NumberOfStudents {
-		update["status"] = STATUS_FULL
+		w.Status = "full"
+		weddingTable.UpdateId(w.ID, bson.M{"$set": bson.M{"status": "full"}})
 	}
 	return weddingTable.UpdateId(w.ID, update)
 }
@@ -82,11 +90,11 @@ func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 		}
 	}
 	for i, item := range w.Students {
-		if item.Status == s.Status {
-			countStatus++
-		}
 		if item.ID == s.ID {
 			w.Students[i] = s
+		}
+		if item.Status == s.Status {
+			countStatus++
 		}
 	}
 	var update = bson.M{}
