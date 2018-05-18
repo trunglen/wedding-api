@@ -6,6 +6,8 @@ import (
 )
 
 func (u *User) UpBalance(money int64) error {
+	u.Information.Balance = u.Information.Balance + money
+	u.Information.FinishedWedding = u.Information.FinishedWedding + 1
 	return userTable.UpdateId(u.ID, bson.M{
 		"$inc": bson.M{
 			"information.balance":        money,

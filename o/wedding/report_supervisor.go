@@ -19,7 +19,7 @@ func GetGeneralReportBySupervisor(userID string, role string) (*GeneralReport, e
 		"$project": bson.M{
 			"item": "1",
 			"finish": bson.M{
-				"$cond": []interface{}{bson.M{"$eq": []string{"$status", "finished"}}, 1, 0},
+				"$cond": []interface{}{bson.M{"$eq": []string{"$status", "finish"}}, 1, 0},
 			},
 			"missing": bson.M{
 				"$cond": []interface{}{bson.M{"$eq": []string{"$status", "missing"}}, 1, 0},

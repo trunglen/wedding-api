@@ -21,6 +21,7 @@ func NewStudentServer(parent *gin.RouterGroup, name string) *StudentServer {
 	s.POST("login", s.login)
 	s.GET("logout", s.logout)
 	s.POST("profile/update", s.updateProfile)
+	s.GET("profile/get", s.getProfile)
 	s.POST("password/change", s.changePassword)
 	s.POST("avatar", s.uploadAvatar)
 	s.POST("portrait", s.uploadPortrait)
@@ -89,6 +90,13 @@ func (s *StudentServer) updateProfile(c *gin.Context) {
 	web.AssertNil(u.UpdateProfile())
 	u.SetAvatarAndUpload(c.Request)
 	s.SendData(c, u)
+}
+
+func (s *StudentServer) getProfile(c *gin.Context) {
+	var usr = cache.MustGetStudent(c)
+	usr, err := user.GetByID(usr.ID)
+	web.AssertNil(err)
+	s.SendData(c, usr)
 }
 
 func (s *StudentServer) changePassword(c *gin.Context) {

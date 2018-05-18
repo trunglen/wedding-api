@@ -92,6 +92,7 @@ func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	for i, item := range w.Students {
 		if item.ID == s.ID {
 			w.Students[i] = s
+			item.Status = s.Status
 		}
 		if item.Status == s.Status {
 			countStatus++
@@ -100,6 +101,7 @@ func (w *Wedding) UpdateStudentStatus(s Student, verifyCode string) error {
 	var update = bson.M{}
 	if countStatus == len(w.Students) && len(w.Students) == w.NumberOfStudents {
 		update["status"] = s.Status
+		w.Status = Status(s.Status)
 	}
 	update["students"] = w.Students
 	return weddingTable.UpdateId(w.ID, bson.M{"$set": update})
@@ -145,11 +147,12 @@ func GetWeddingsByRole(userID string, role string) ([]*Wedding, error) {
 	var result []*Wedding
 	var query = bson.M{}
 	if role != "super-admin" {
-		if role == "manager" {
-			query["created_by"] = userID
-		} else {
-			query["restaurant_id"] = userID
-		}
+		// if role == "manager" {
+		// 	query["created_by"] = userID
+		// } else {
+		// 	query["restaurant_id"] = userID
+		// }
+		query["restaurant_id"] = userID
 	}
 	var err = weddingTable.FindWhere(query, &result)
 	return result, err

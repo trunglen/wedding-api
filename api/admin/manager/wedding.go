@@ -45,7 +45,9 @@ func (s *ManagerServer) getMoveWarningWeddings(c *gin.Context) {
 }
 
 func (s *ManagerServer) getMissingWarningWeddings(c *gin.Context) {
-	result, err := wedding.GetMisingWarningWedding(c.Query("restaurant_id"))
+	var au, err = auth.GetByID(web.GetToken(c.Request))
+	web.AssertNil(err)
+	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
 	web.AssertNil(err)
 	s.SendData(c, result)
 }
