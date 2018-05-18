@@ -96,6 +96,7 @@ func (s *StudentServer) getProfile(c *gin.Context) {
 	var usr = cache.MustGetStudent(c)
 	usr, err := user.GetByID(usr.ID)
 	web.AssertNil(err)
+	usr.SetAvatarAndUpload(c.Request)
 	s.SendData(c, usr)
 }
 
