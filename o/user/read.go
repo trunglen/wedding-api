@@ -38,6 +38,25 @@ func GetUsersByRole(role, userID, userRole string) ([]*User, error) {
 	return users, err
 }
 
+func GetByRole(role string, u *User) ([]*User, error) {
+	var users []*User
+	var query = bson.M{
+		"role": role,
+		"dtime": bson.M{
+			"$ne": 0,
+		},
+	}
+	if u.Role != "super-admin" {
+		if u.Role == "supervisor" {
+			query["restaurant_id"] = u.ID
+		} else {
+			query["restaurant_id"] = u.RestaurantID
+		}
+	}
+	err := userTable.Find(query).Sort("-ctime").All(&users)
+	return users, err
+}
+
 func GetManagers() ([]*User, error) {
 	var users []*User
 	var match = mongodb.Match(bson.M{

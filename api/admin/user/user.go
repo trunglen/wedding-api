@@ -44,7 +44,9 @@ func (s *UserServer) list(c *gin.Context) {
 	var role = c.Query("role")
 	var au, err = auth.GetByID(web.GetToken(c.Request))
 	web.AssertNil(err)
-	users, err := user.GetUsersByRole(role, au.UserID, au.Role)
+	usr, err := user.GetByID(au.UserID)
+	web.AssertNil(err)
+	users, err := user.GetByRole(role, usr)
 	web.AssertNil(err)
 	s.SendData(c, users)
 }

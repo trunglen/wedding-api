@@ -31,7 +31,7 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 func (s *ManagerServer) getWeddings(c *gin.Context) {
 	var au, err = auth.GetByID(web.GetToken(c.Request))
 	web.AssertNil(err)
-	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
+	result, err := wedding.GetWeddingsByRoleAndStatus(au.UserID, au.Role, c.Query("status"))
 	web.AssertNil(err)
 	s.SendData(c, result)
 }
@@ -47,7 +47,13 @@ func (s *ManagerServer) getMoveWarningWeddings(c *gin.Context) {
 func (s *ManagerServer) getMissingWarningWeddings(c *gin.Context) {
 	var au, err = auth.GetByID(web.GetToken(c.Request))
 	web.AssertNil(err)
-	result, err := wedding.GetWeddingsByRole(au.UserID, au.Role)
+	usr, err := user.GetByID(au.UserID)
+	web.AssertNil(err)
+	var restaurantID = usr.ID
+	if usr.Role == "manager" {
+		restaurantID = usr.RestaurantID
+	}
+	result, err := wedding.GetMisingWarningWedding(restaurantID)
 	web.AssertNil(err)
 	s.SendData(c, result)
 }

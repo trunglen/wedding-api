@@ -157,3 +157,24 @@ func GetWeddingsByRole(userID string, role string) ([]*Wedding, error) {
 	var err = weddingTable.FindWhere(query, &result)
 	return result, err
 }
+
+// GetWeddingsByRole GetWeddingsByRole
+func GetWeddingsByRoleAndStatus(userID, role, status string) ([]*Wedding, error) {
+	var result []*Wedding
+	var query = bson.M{}
+	if role != "super-admin" {
+		if role == "supervisor" {
+			query["restaurant_id"] = userID
+		} else {
+			query["created_by"] = userID
+		}
+	}
+	query["status"] = "finish"
+	if status != "finish" {
+		query["status"] = bson.M{
+			"$ne": "finish",
+		}
+	}
+	var err = weddingTable.FindWhere(query, &result)
+	return result, err
+}

@@ -43,11 +43,11 @@ func (s *StudentServer) login(c *gin.Context) {
 	}{}
 	web.AssertNil(c.BindJSON(&loginInfo))
 	user, err := user.LoginByStudent(loginInfo.Phone, loginInfo.Password)
+	web.AssertNil(err)
 	{
 		user.Information.Avatar = "http://" + c.Request.Host + "/static/student/avatar/" + user.ID
 		user.Information.Portrait = "http://" + c.Request.Host + "/static/student/portrait/" + user.ID
 	}
-	web.AssertNil(err)
 	cache.RemoveToken(user.ID)
 	var auth = cache.CreateAuth(user.ID, user.Role)
 	s.SendData(c, map[string]interface{}{

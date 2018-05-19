@@ -48,11 +48,18 @@ func (s *ManagerServer) createWedding(c *gin.Context) {
 }
 
 func (s *ManagerServer) getWeddings(c *gin.Context) {
+	// var au, err = auth.GetByID(web.GetToken(c.Request))
+	// web.AssertNil(err)
+	// user, err := user.GetByID(au.UserID)
+	// web.AssertNil(err)
+	// result, err := wedding.GetWeddingsByRole(user.RestaurantID, au.Role)
+	// web.AssertNil(err)
+	// s.SendData(c, result)
 	var au, err = auth.GetByID(web.GetToken(c.Request))
 	web.AssertNil(err)
-	user, err := user.GetByID(au.UserID)
-	web.AssertNil(err)
-	result, err := wedding.GetWeddingsByRole(user.RestaurantID, au.Role)
+	// user, err := user.GetByID(au.UserID)
+	// web.AssertNil(err)
+	result, err := wedding.GetWeddingsByRoleAndStatus(au.UserID, au.Role, c.Query("status"))
 	web.AssertNil(err)
 	s.SendData(c, result)
 }
